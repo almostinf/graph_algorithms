@@ -36,7 +36,7 @@ def bfs(self) -> int:
                 if self.net.has_edge(cur, parent):
                     self.net[cur][parent]['capacity'] += flow
                 else:
-                    self.net.add_edge(cur, parent, capacity=-flow)
+                    self.net.add_edge(cur, parent, capacity=flow)
                 
                 cur = parent
 
