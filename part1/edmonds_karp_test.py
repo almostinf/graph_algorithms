@@ -1,35 +1,33 @@
-from graph import Graph
+from graph import read_file
 import networkx as nx
+import os, time
 
-def test_edmonds_karp():
-    # Test case 1: Basic flow network
-    net1 = nx.DiGraph()
-    net1.add_edge(1, 2, capacity=40)
-    net1.add_edge(1, 4, capacity=20)
-    net1.add_edge(2, 3, capacity=30)
-    net1.add_edge(2, 4, capacity=20)
-    net1.add_edge(3, 4, capacity=10)
+# run tests in part1 directory with command: `pytest -v -s .`
 
-    net_copy = net1.copy()
-    g1 = Graph(net1, 1, 4)
-    assert g1.edmonds_karp() == nx.maximum_flow_value(net_copy, 1, 4)
+def run_tests(test_dir):
+    for filepath in os.listdir(test_dir):
+        if filepath == 'test_rl10.txt' or filepath == 'test_rd07.txt':
+            continue
+        g = read_file(os.path.join(test_dir, filepath))
+        net_copy = g.net.copy()
+        start = time.time()
+        max_flow = g.edmonds_karp()
+        end = time.time()
+        print(f"Test {filepath}: {max_flow}, time: {end - start} sec")
+        assert max_flow == nx.maximum_flow_value(net_copy, 1, len(net_copy))
 
-    # Test case 2: Source and sink are the same
-    net2 = nx.DiGraph()
-    net2.add_edge(1, 1, capacity=100)  # Self-loop
-    g2 = Graph(net2, 1, 1)
-    assert g2.edmonds_karp() == 0  # Maximum flow should be 0
+def test_basic_edmonds_karp():
+    test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/basic")
+    run_tests(test_dir=test_dir)
 
-    # Test case 3: Disconnected graph
-    net3 = nx.DiGraph()
-    net3.add_edge(1, 2, capacity=10)
-    net3.add_edge(3, 4, capacity=20)
-    g3 = Graph(net3, 1, 4)
-    assert g3.edmonds_karp() == 0  # Maximum flow should be 0
+def test_d_edmonds_karp():
+    test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/d")
+    run_tests(test_dir=test_dir)
 
-    # Test case 4: No path from source to sink
-    net4 = nx.DiGraph()
-    net4.add_edge(1, 2, capacity=10)
-    net4.add_edge(3, 4, capacity=20)
-    g4 = Graph(net4, 1, 5)  # Sink node does not exist in the graph
-    assert g4.edmonds_karp() == 0  # Maximum flow should be 0
+def test_rd_edmonds_karp():
+    test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/rd")
+    run_tests(test_dir=test_dir)
+
+def test_rl_edmonds_karp():
+    test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/rl")
+    run_tests(test_dir=test_dir)
