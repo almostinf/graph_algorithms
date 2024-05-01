@@ -13,6 +13,7 @@ class Graph:
     def edmonds_karp(self):
         return edmonds_karp(self)
 
+
 def read_file(path: str) -> Graph:
     with open(path, 'r') as file:
         data = file.read()

@@ -16,17 +16,21 @@ def run_tests(test_dir):
         print(f"Test {filepath}: {max_flow}, time: {end - start} sec")
         assert max_flow == nx.maximum_flow_value(net_copy, 1, len(net_copy))
 
+
 def test_basic_edmonds_karp():
     test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/basic")
     run_tests(test_dir=test_dir)
+
 
 def test_d_edmonds_karp():
     test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/d")
     run_tests(test_dir=test_dir)
 
+
 def test_rd_edmonds_karp():
     test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/rd")
     run_tests(test_dir=test_dir)
+
 
 def test_rl_edmonds_karp():
     test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/rl")
