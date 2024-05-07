@@ -1,28 +1,25 @@
-import queue
+from collections import deque
 
 def bfs(self) -> int:
     parents = {}
     parents[self.source] = None
-    q = queue.Queue()
-    q.put(self.source)
-    min_cap = queue.Queue()
-    min_cap.put(float('inf'))
+    q = deque([self.source])
+    min_cap = {self.source: float('inf')}
     flow = 0
 
-    while not q.empty():
-        cur = q.get()
-        cur_cap = min_cap.get()
-
-        for neighbor in list(self.net[cur].keys()):
-            neighbor_cap = self.net[cur][neighbor]['capacity']
-            if neighbor_cap > 0 and neighbor not in parents:
-                q.put(neighbor)
-                min_cap.put(min(cur_cap, neighbor_cap))
+    while q:
+        cur = q.popleft()
+        cur_cap = min_cap[cur]
+        for neighbor, neighbor_cap in self.net[cur].items():
+            if neighbor_cap['capacity'] > 0 and neighbor not in parents:
+                q.append(neighbor)
+                min_cap[neighbor] = min(cur_cap, neighbor_cap['capacity'])
                 parents[neighbor] = cur
                 if neighbor == self.sink:
-                    flow = min(cur_cap, neighbor_cap)
+                    flow = min(cur_cap, neighbor_cap['capacity'])
                     break
 
+ 
     if flow > 0:
         cur = self.sink
         while cur != self.source:
