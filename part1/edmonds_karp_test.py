@@ -8,13 +8,12 @@ def run_tests(test_dir):
     for filepath in os.listdir(test_dir):
         if filepath == 'test_rl10.txt' or filepath == 'test_rd07.txt':
             continue
-        g = read_file(os.path.join(test_dir, filepath))
-        net_copy = g.net.copy()
+        g, diGraph = read_file(os.path.join(test_dir, filepath))
         start = time.time()
         max_flow = g.edmonds_karp()
         end = time.time()
         print(f"Test {filepath}: {max_flow}, time: {end - start} sec")
-        assert max_flow == nx.maximum_flow_value(net_copy, 1, len(net_copy))
+        assert max_flow == nx.maximum_flow_value(diGraph, 1, len(diGraph))
 
 
 def test_basic_edmonds_karp():

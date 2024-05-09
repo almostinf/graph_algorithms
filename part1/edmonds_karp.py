@@ -19,21 +19,24 @@ def bfs(self) -> int:
                     flow = min(cur_cap, neighbor_cap['capacity'])
                     break
 
- 
     if flow > 0:
         cur = self.sink
         while cur != self.source:
             if cur in parents:
                 parent = parents[cur]
-                if self.net.has_edge(parent, cur):
+                if parent in self.net and cur in self.net[parent]:
                     self.net[parent][cur]['capacity'] -= flow
                 else:
-                    self.net.add_edge(parent, cur, capacity=-flow)
+                    if parent not in self.net:
+                        self.net[parent] = {}
+                    self.net[parent][cur] = {'capacity': -flow}
                 
-                if self.net.has_edge(cur, parent):
+                if cur in self.net and parent in self.net[cur]:
                     self.net[cur][parent]['capacity'] += flow
                 else:
-                    self.net.add_edge(cur, parent, capacity=flow)
+                    if cur not in self.net:
+                        self.net[cur] = {}
+                    self.net[cur][parent] = {'capacity': flow}
                 
                 cur = parent
 
