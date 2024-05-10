@@ -4,9 +4,11 @@ import os, time
 
 # run tests in part1 directory with command: `pytest -v -s .`
 
+skip_tests = ['test_rl10.txt', 'test_rd07.txt']
+
 def run_tests(test_dir):
     for filepath in os.listdir(test_dir):
-        if filepath == 'test_rl10.txt' or filepath == 'test_rd07.txt':
+        if filepath in skip_tests:
             continue
         g, diGraph = read_file(os.path.join(test_dir, filepath))
         start = time.time()
