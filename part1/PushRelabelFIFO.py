@@ -1,18 +1,18 @@
-from graph_algorithms.part1.graph import Graph
-import networkx as nx
-
-def FIFOPushRelabel(self: Graph) -> int:
+# import copy
+def FIFOPushRelabel(self) -> int:
     queue = []
-    e = [0] * (self.net.number_of_nodes() + 1)
-    h = [0] * (self.net.number_of_nodes() + 1)
-    inQueue = [False] * (self.net.number_of_nodes() + 1)
-    h[self.source] = self.net.number_of_nodes()
-    graph = self.net.copy()
+    e = [0] * (len(self.net) + 1)
+    h = [0] * (len(self.net) + 1)
+    inQueue = [False] * (len(self.net) + 1)
+    h[self.source] = len(self.net)
+    graph = {v: {u: {'capacity': self.net[v][u]['capacity']} for u in self.net[v]} for v in self.net}
+    # graph = {v: copy.deepcopy(self.net[v]) for v in self.net} # медленнее справляется будто
+    # graph = self.net.copy() # --> не работает приходится как выше делать
     init_graph(graph)
     source = self.source
     sink = self.sink
-    for v in list(graph[source].keys()):
-        if(graph[source][v]['capacity'] != 0):
+    for v in graph[source]:
+        if graph[source][v]['capacity'] != 0:
             graph[source][v]['capacity'] = 0
             graph[v][source]['capacity'] = self.net[source][v]['capacity']
             e[v] = graph[v][source]['capacity']
@@ -26,15 +26,15 @@ def FIFOPushRelabel(self: Graph) -> int:
         push(graph, u, e, h, queue, inQueue, source, sink)
     return e[self.sink]
 
-def relabel(graph: nx.DiGraph , u, h):
+def relabel(graph, u, h):
     minHeight = float("inf")
-    for v in list(graph[u].keys()):
-        if graph[u][v]['capacity']> 0:
+    for v in graph[u]:
+        if graph[u][v]['capacity'] > 0:
             minHeight = min(minHeight, h[v])
             h[u] = minHeight + 1
 
-def push(graph: nx.DiGraph, u, e, h, queue, in_queue, source, sink):
-    for v in list(graph[u].keys()):
+def push(graph, u, e, h, queue, in_queue, source, sink):
+    for v in graph[u]:
         if e[u] == 0:
             break
 
@@ -55,7 +55,8 @@ def push(graph: nx.DiGraph, u, e, h, queue, in_queue, source, sink):
         queue.append(u)
         in_queue[u] = True
 
-def init_graph(graph: nx.DiGraph):
-    for edge in graph.edges:
-        if not graph.has_edge(edge[1],edge[0]):
-            graph.add_edge(edge[1],edge[0], capacity=0)
+def init_graph(graph):
+    for v in graph:
+        for u in graph[v]:
+            if u not in graph or v not in graph[u]:
+                graph[u][v] = {'capacity': 0}

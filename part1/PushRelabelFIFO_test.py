@@ -9,13 +9,12 @@ def run_tests(test_dir):
     for filepath in os.listdir(test_dir):
         if filepath == 'test_rl10.txt' or filepath == 'test_rd07.txt':
             continue
-        g = read_file(os.path.join(test_dir, filepath))
-        net_copy = g.net.copy()
+        g, lib_graph = read_file(os.path.join(test_dir, filepath))
         start = time.time()
-        max_flow = PushRelabelFIFO.FIFOPushRelabel(g)
+        max_flow = g.FIFOPushRelabel()
         end = time.time()
         print(f"Test {filepath}: {max_flow}, time: {end - start} sec")
-        assert max_flow == nx.maximum_flow_value(net_copy, 1, len(net_copy))
+        assert max_flow == nx.maximum_flow_value(lib_graph, 1, len(lib_graph))
 
 def test_basic_push_relabel():
     test_dir = os.path.join(os.path.abspath(os.getcwd()), "MaxFlow-tests/basic")
