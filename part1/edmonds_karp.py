@@ -12,12 +12,12 @@ def bfs(self) -> int:
         cur_cap = min_cap[cur]
         for neighbor, neighbor_cap in self.net[cur].items():
             if neighbor_cap['capacity'] > 0 and neighbor not in parents:
-                q.append(neighbor)
                 min_cap[neighbor] = min(cur_cap, neighbor_cap['capacity'])
                 parents[neighbor] = cur
                 if neighbor == self.sink:
                     flow = min(cur_cap, neighbor_cap['capacity'])
                     break
+                q.append(neighbor)
 
     if flow > 0:
         cur = self.sink
